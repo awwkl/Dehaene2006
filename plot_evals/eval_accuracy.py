@@ -1,8 +1,14 @@
 """
-python /ccn2/u/khaiaw/Code/Dehaene2006/plot_evals/eval_accuracy.py \
-    --plot_dir /ccn2/u/khaiaw/Code/Dehaene2006/plot_evals/plots \
+    --model_name CWM170M_RGB_Babyview_200k/model_00200000.pt \
+    --model_name CWM1B_RGB_Babyview_200k/model_00200000.pt \
     --model_name CWM170M_RGB_BigVideo_200k/model_00200000.pt \
     --model_name CWM1B_RGB_BigVideo_200k/model_00200000.pt \
+    --model_name vjepa2/downloads/vitl.pt \
+    --model_name vjepa2/anneal/32.8.vitl16-256px-16f/babyview_bs3072_e60/e40.pt \
+        
+python /ccn2/u/khaiaw/Code/Dehaene2006/plot_evals/eval_accuracy.py \
+    --plot_dir /ccn2/u/khaiaw/Code/Dehaene2006/plot_evals/plots \
+    --model_name google__vit-large-patch16-224 \
 """
 
 import os
@@ -60,7 +66,9 @@ def plot_accuracy(args):
     for x, y in zip(layer_num_accuracy_dict.keys(), layer_num_accuracy_dict.values()):
         plt.text(x, y + 0.02, f'{y:.1f}', ha='center')
     plt.plot(layer_num_accuracy_dict.keys(), layer_num_accuracy_dict.values(), marker='o')
-    plt.title('Layer-wise Accuracy')
+    max_acc = max(layer_num_accuracy_dict.values())
+    mean_acc = sum(layer_num_accuracy_dict.values()) / len(layer_num_accuracy_dict) if layer_num_accuracy_dict else 0
+    plt.title(f'Layer-wise Accuracy (mean: {mean_acc:.1f}%, max: {max_acc:.1f}%)')
     plt.xlabel('Layer Number')
     plt.ylabel('Accuracy')
     plt.ylim(0, 100)
