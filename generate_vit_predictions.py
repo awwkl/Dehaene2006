@@ -50,25 +50,16 @@ def get_args():
 
 @torch.no_grad()
 def compute_similarity(X1_np, X2_np):
-    
     # X1_np: [196, 768]
-    
-    # X: [tokens, dim]
     X1 = torch.from_numpy(X1_np).float()
     X2 = torch.from_numpy(X2_np).float()
 
-    # unit-norm each token first
-    # X1 = F.normalize(X1, dim=-1, eps=1e-8)
-    # X2 = F.normalize(X2, dim=-1, eps=1e-8)
+    # average tokens to a single vector, then do cosine similarity
+    v1 = X1.mean(dim=0) # [768]
+    v2 = X2.mean(dim=0) # [768]
 
-    # remove per-image token mean (kills background bias)
-    # X1 = X1 - X1.mean(dim=0, keepdim=True)
-    # X2 = X2 - X2.mean(dim=0, keepdim=True)
+    return F.cosine_similarity(v1, v2, dim=-1).item()
 
-    # average tokens to a single vector, then normalize and dot
-    v1 = F.normalize(X1.mean(dim=0), dim=0)
-    v2 = F.normalize(X2.mean(dim=0), dim=0)
-    return torch.dot(v1, v2).item()
 
 
 class ViTPredictor:

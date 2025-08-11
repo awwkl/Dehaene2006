@@ -68,7 +68,7 @@ def plot_accuracy(args):
     plt.plot(layer_num_accuracy_dict.keys(), layer_num_accuracy_dict.values(), marker='o')
     max_acc = max(layer_num_accuracy_dict.values())
     mean_acc = sum(layer_num_accuracy_dict.values()) / len(layer_num_accuracy_dict) if layer_num_accuracy_dict else 0
-    plt.title(f'Layer-wise Accuracy (mean: {mean_acc:.1f}%, max: {max_acc:.1f}%)')
+    plt.title(f'{model_name}, Accuracy (mean: {mean_acc:.1f}%, max: {max_acc:.1f}%)')
     plt.xlabel('Layer Number')
     plt.ylabel('Accuracy')
     plt.ylim(0, 100)
