@@ -30,7 +30,7 @@ def get_args():
     return parser.parse_args()
 
 @torch.no_grad()
-def sim_centered_mean(X1_np, X2_np):
+def compute_similarity(X1_np, X2_np):
     # X: [1024, 1280] = [tokens, dim]
     X1 = torch.from_numpy(X1_np).float()
     X2 = torch.from_numpy(X2_np).float()
@@ -43,8 +43,11 @@ def sim_centered_mean(X1_np, X2_np):
     X1 = X1 - X1.mean(dim=0, keepdim=True)
     X2 = X2 - X2.mean(dim=0, keepdim=True)
 
-    v1 = F.normalize(X1.mean(dim=0), dim=0)   # [1280]
-    v2 = F.normalize(X2.mean(dim=0), dim=0)
+    mean1 = X1.mean(dim=0)
+    mean2 = X2.mean(dim=0)
+
+    v1 = F.normalize(mean1, dim=0)   # [1280]
+    v2 = F.normalize(mean2, dim=0)
     return torch.dot(v1, v2).item()
 
 def generate_predictions(args):
@@ -91,7 +94,7 @@ def generate_predictions(args):
                         # breakpoint()
                         # similarity = F.cosine_similarity(x1, x2, dim=-1)
                         # similarity = similarity.mean()
-                        similarity = sim_centered_mean(stimuli_feat_dict[png_name], stimuli_feat_dict[other_png_name])
+                        similarity = compute_similarity(stimuli_feat_dict[png_name], stimuli_feat_dict[other_png_name])
                         total_similarity += similarity
                         count += 1
                 avg_similarity = total_similarity / count if count > 0 else 0
